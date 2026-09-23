@@ -34,6 +34,23 @@ app.get('/assignments', async(req, res)=>{
         res.status(500).json({err:"Server Failed"})
     }
 })
+app.patch('/assignments/:id', async(req, res)=>{
+    try{
+        const { id } = req.params;
+        const result = await pool.query(`
+            UPDATE assignments SET submitted = true where id = $1
+            RETURNING * ;`, [id])
+        if (result.row.length === 0){
+            return res.status(404).json({err:"Request not Found"})
+        } else {
+            res.status(201).json(result.rows[0])
+        }
+    }catch(err){
+        console.log(err)
+        res.status(500).json({err:"Server Failed"})
+    }
+})
+
 
 app.listen(PORT, () => {
     console.log('Server running on port 3000');

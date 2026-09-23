@@ -25,6 +25,16 @@ app.post('/assignments', async (req,res) => {
     }
 });
 
+app.get('/assignments', async(req, res)=>{
+    try{
+        let result = await pool.query(`SELECT * FROM assignments ORDER BY id desc`)
+        res.status(200).json(result.rows)
+    }catch(err){
+        console.log(err)
+        res.status(500).json({err:"Server Failed"})
+    }
+})
+
 app.listen(PORT, () => {
     console.log('Server running on port 3000');
 })
